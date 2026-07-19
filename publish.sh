@@ -20,9 +20,20 @@ fi
 
 echo "==> Security gate: scanning published content for secrets / PII"
 PATTERNS='__PII_PATTERN__|sk-[A-Za-z0-9]{20}|SUPABASE_[A-Z_]*KEY|-----BEGIN|xox[baprs]-[A-Za-z0-9-]+|AIza[0-9A-Za-z_-]{20}|ghp_[A-Za-z0-9]{30}'
-if grep -rEIn "$PATTERNS" "$CONTENT" "$REPO/public/projects" 2>/dev/null; then
+SCAN=("$CONTENT")
+[ -d "$REPO/public/projects" ] && SCAN+=("$REPO/public/projects")
+set +e
+HITS=$(grep -rEIn "$PATTERNS" "${SCAN[@]}")
+rc=$?
+set -e
+# grep: 0 = match found, 1 = no match, >1 = error. Fail CLOSED on match OR error.
+if [ "$rc" -eq 0 ]; then
+  echo "$HITS" >&2
   echo "!!! ABORT: possible secret/PII in the content above. Nothing built or pushed." >&2
   echo "    Scrub the offending note in $VAULT and re-run." >&2
+  exit 1
+elif [ "$rc" -gt 1 ]; then
+  echo "!!! ABORT: security scan errored (rc=$rc). Failing closed; nothing built or pushed." >&2
   exit 1
 fi
 echo "    clean"
