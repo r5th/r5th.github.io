@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+/* Rendered markdown from project notes (no typography plugin needed for Phase 1). */
+.md :is(h2) { font-size: 1.25rem; font-weight: 600; margin: 1.75rem 0 .5rem; }
+.md :is(h3) { font-size: 1.05rem; font-weight: 600; margin: 1.25rem 0 .4rem; }
+.md p { margin: .75rem 0; line-height: 1.75; }
+.md ul { margin: .75rem 0; padding-left: 1.25rem; list-style: disc; }
+.md li { margin: .35rem 0; line-height: 1.6; }
+.md a { text-decoration: underline; text-underline-offset: 2px; }
+
+@media print {
+  nav, footer { display: none; }
+}

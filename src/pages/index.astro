@@ -1,0 +1,42 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+
+const projects = await getCollection('projects', ({ data }) => data.publish !== false);
+const featured = projects.filter((p) => p.data.featured);
+// TODO(Afif): add GitHub / LinkedIn / X handles below when you have them.
+const socials = [
+  { href: 'mailto:afif@qojix.com', label: 'Email' },
+  // { href: 'https://github.com/<handle>', label: 'GitHub' },
+  // { href: 'https://linkedin.com/in/<handle>', label: 'LinkedIn' },
+];
+---
+<Base title="Afif — Design & AI, co-founder of Qojix">
+  <section class="pt-6">
+    <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Afif</h1>
+    <p class="mt-4 text-lg leading-relaxed text-neutral-600 dark:text-neutral-300">
+      Design &amp; Artificial Intelligence student at SUTD, and co-founder of{" "}
+      <a href="https://qojix.com" class="underline underline-offset-2">Qojix</a> —
+      an AI assistant that handles WhatsApp and voice for real-estate agents.
+      I build AI products end to end, from data model to interface.
+    </p>
+    <div class="mt-6 flex gap-4 text-sm">
+      {socials.map((s) => (
+        <a href={s.href} class="text-neutral-500 underline underline-offset-2 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100">{s.label}</a>
+      ))}
+    </div>
+  </section>
+
+  <section class="mt-16">
+    <div class="flex items-baseline justify-between">
+      <h2 class="text-sm font-semibold uppercase tracking-wider text-neutral-500">Featured</h2>
+      <a href="/projects" class="text-sm text-neutral-500 underline underline-offset-2 hover:text-neutral-900 dark:hover:text-neutral-100">All projects →</a>
+    </div>
+    <div class="mt-6 grid gap-4 sm:grid-cols-2">
+      {featured.map((p) => (
+        <ProjectCard title={p.data.title} summary={p.data.summary} status={p.data.status} stack={p.data.stack} cover={p.data.cover} />
+      ))}
+    </div>
+  </section>
+</Base>
