@@ -1,5 +1,6 @@
 ---
 title: Kuppi
+order: 3
 status: completed
 featured: true
 publish: true

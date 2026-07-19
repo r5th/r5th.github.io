@@ -1,42 +1,276 @@
 ---
-import { getCollection } from 'astro:content';
-import Base from '../layouts/Base.astro';
-import ProjectCard from '../components/ProjectCard.astro';
+import '../styles/global.css';
+import { getCollection, render } from 'astro:content';
+import { slugify } from '../lib/slug';
 
-const projects = await getCollection('projects', ({ data }) => data.publish !== false);
-const featured = projects.filter((p) => p.data.featured);
-// TODO(Afif): add GitHub / LinkedIn / X handles below when you have them.
-const socials = [
-  { href: 'mailto:afif@qojix.com', label: 'Email' },
-  // { href: 'https://github.com/<handle>', label: 'GitHub' },
-  // { href: 'https://linkedin.com/in/<handle>', label: 'LinkedIn' },
-];
+const email = 'afif.mto@gmail.com';
+
+const projects = (await getCollection('projects', ({ data }) => data.publish !== false)).sort(
+  (a, b) => (a.data.order ?? 99) - (b.data.order ?? 99),
+);
+
+const items = await Promise.all(
+  projects.map(async (p, i) => {
+    const { Content } = await render(p);
+    const d = p.data;
+    const links = [
+      [d.links.live, 'Live ↗'],
+      [d.links.demo, 'Demo ↗'],
+      [d.links.repo, 'Code ↗'],
+      [d.links.video, 'Video ↗'],
+    ]
+      .filter(([u]) => u && u.length)
+      .map(([href, label]) => ({ href, label }));
+    return {
+      d,
+      Content,
+      slug: slugify(d.title),
+      idx: String(i + 1).padStart(2, '0'),
+      links,
+      wip: d.status === 'wip',
+    };
+  }),
+);
+const total = String(items.length).padStart(2, '0');
 ---
-<Base title="Afif — Design & AI, co-founder of Qojix">
-  <section class="pt-6">
-    <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Afif</h1>
-    <p class="mt-4 text-lg leading-relaxed text-neutral-600 dark:text-neutral-300">
-      Design &amp; Artificial Intelligence student at SUTD, and co-founder of{" "}
-      <a href="https://qojix.com" class="underline underline-offset-2">Qojix</a> —
-      an AI assistant that handles WhatsApp and voice for real-estate agents.
-      I build AI products end to end, from data model to interface.
-    </p>
-    <div class="mt-6 flex gap-4 text-sm">
-      {socials.map((s) => (
-        <a href={s.href} class="text-neutral-500 underline underline-offset-2 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100">{s.label}</a>
-      ))}
-    </div>
-  </section>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Afif — Design & AI</title>
+    <meta
+      name="description"
+      content="Afif — Design & Artificial Intelligence student at SUTD, co-founder of Qojix. Builds AI products end to end."
+    />
+    <script is:inline>
+      /* Set theme before first paint */
+      (function () {
+        var t = null;
+        try {
+          t = localStorage.getItem('afif-theme');
+        } catch (e) {}
+        if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
 
-  <section class="mt-16">
-    <div class="flex items-baseline justify-between">
-      <h2 class="text-sm font-semibold uppercase tracking-wider text-neutral-500">Featured</h2>
-      <a href="/projects" class="text-sm text-neutral-500 underline underline-offset-2 hover:text-neutral-900 dark:hover:text-neutral-100">All projects →</a>
+    <div id="loader" role="status" aria-label="Loading">
+      <div id="loaderName" data-text="WELCOME" aria-hidden="true">WELCOME</div>
+      <div id="loaderTag">Portfolio / 2026</div>
     </div>
-    <div class="mt-6 grid gap-4 sm:grid-cols-2">
-      {featured.map((p) => (
-        <ProjectCard title={p.data.title} summary={p.data.summary} status={p.data.status} stack={p.data.stack} cover={p.data.cover} />
-      ))}
-    </div>
-  </section>
-</Base>
+
+    <header id="nav">
+      <div class="wrap bar">
+        <a class="brand" href="#/">Afif<em>.</em></a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="#work">Work</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+        </nav>
+        <div class="nav-right">
+          <button class="icon-btn" id="themeBtn" aria-label="Toggle color theme"><span class="ticon"></span></button>
+          <button class="icon-btn" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div id="scrim"></div>
+    <aside id="drawer" aria-label="Menu">
+      <div class="d-head">
+        <span class="mono">Menu</span>
+        <button class="icon-btn" id="drawerClose" aria-label="Close menu">✕</button>
+      </div>
+      <nav>
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="d-foot mono">{email}</div>
+    </aside>
+
+    <main id="main">
+      <!-- ============ HOME ============ -->
+      <div id="home">
+        <section id="hero" class="wrap">
+          <div class="hero-kicker mono rv"><span>Design &amp; AI — SUTD</span><span class="dot">●</span><span>Singapore</span></div>
+          <h1 class="big rv" data-bulge="">Afif</h1>
+          <div class="hero-sub">
+            <p class="rv">
+              <strong>Design &amp; Artificial Intelligence student</strong> at SUTD and co-founder of Qojix. I build AI
+              products end to end — model to interface to infrastructure.
+            </p>
+            <div class="hero-facts rv">
+              <span class="mono">Currently — Qojix</span>
+              <span class="mono">Available — <a href={`mailto:${email}`} style="color:var(--accent)">{email}</a></span>
+            </div>
+          </div>
+        </section>
+
+        <section id="work" class="wrap">
+          <div class="sec-head rv">
+            <h2>Selected Work</h2>
+            <span class="mono">{total} Projects</span>
+          </div>
+
+          {
+            items.map((it) => (
+              <article class="row rv">
+                <div class="row-top">
+                  <span class="idx">{it.idx}</span>
+                  <span class:list={['chip', { live: it.wip }]}>
+                    <i />
+                    {it.wip ? 'In progress' : 'Completed'}
+                  </span>
+                  <span class="yr">{it.d.year}</span>
+                </div>
+                <h3 class="ptitle">
+                  <a href={`#/${it.slug}`} data-bulge="">
+                    {it.d.title}
+                  </a>
+                </h3>
+                <div class="row-grid">
+                  <div>
+                    <p class="sum">{it.d.summary}</p>
+                    <div class="plinks">
+                      {it.links.map((l) => (
+                        <a href={l.href} target="_blank" rel="noopener">
+                          {l.label}
+                        </a>
+                      ))}
+                      <a class="more" href={`#/${it.slug}`}>
+                        Case study →
+                      </a>
+                    </div>
+                  </div>
+                  <div class="row-meta">
+                    {it.d.role && (
+                      <span class="role-line">
+                        <b>{it.d.role}</b>
+                      </span>
+                    )}
+                    <ul class="stack">
+                      {it.d.stack.map((s) => (
+                        <li>{s}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </article>
+            ))
+          }
+        </section>
+
+        <section id="about" class="wrap">
+          <div class="grid">
+            <h2 class="disp rv" data-bulge="">About</h2>
+            <div class="txt rv">
+              <p>
+                I'm Afif, a Design &amp; Artificial Intelligence student at the Singapore University of Technology and
+                Design, and co-founder of <strong>Qojix</strong> — an AI assistant that handles WhatsApp and voice
+                conversations for real-estate agents.
+              </p>
+              <p>
+                I like owning the whole stack of a product: the model behavior, the interface, the firmware when there is
+                firmware, and the deployment. Most of my work sits where AI meets a real workflow — agents answering
+                leads, staff sanitizing a cleanroom, someone decoding a government letter.
+              </p>
+              <div class="now">
+                <span class="mono">Now — Building Qojix</span>
+                <span class="mono">School — SUTD, Design &amp; AI</span>
+                <span class="mono">Contact — {email}</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <footer id="contact" class="wrap">
+          <p class="mono rv" style="margin-bottom:20px">Get in touch</p>
+          <a class="mail rv" href={`mailto:${email}`}>{email}</a>
+          <div class="foot-row">
+            <span class="mono">© 2026 Afif</span>
+            <span class="mono">Set in Archivo Variable</span>
+          </div>
+        </footer>
+      </div>
+
+      <!-- ============ PROJECT PAGES ============ -->
+      {
+        items.map((it) => {
+          const { Content } = it;
+          return (
+            <article class="pp" id={`pp-${it.slug}`} hidden data-title={it.d.title}>
+              <div class="wrap">
+                <a class="back" href="#/">
+                  ← Index
+                </a>
+                <header class="pp-head">
+                  <p class="crumb mono">
+                    Project {it.idx} / {total} —{' '}
+                    {it.wip ? <span style="color:var(--accent)">In progress</span> : 'Completed'}
+                  </p>
+                  <h1 class="ptitle" data-bulge="">
+                    {it.d.title}
+                  </h1>
+                  <p class="pp-sum">{it.d.summary}</p>
+                  <dl class="pp-meta">
+                    <div>
+                      <dt>Status</dt>
+                      <dd>{it.wip ? 'In progress' : 'Completed'}</dd>
+                    </div>
+                    {it.d.role && (
+                      <div>
+                        <dt>Role</dt>
+                        <dd>{it.d.role}</dd>
+                      </div>
+                    )}
+                    {it.d.year && (
+                      <div>
+                        <dt>Year</dt>
+                        <dd>{it.d.year}</dd>
+                      </div>
+                    )}
+                    {it.links.length > 0 && (
+                      <div>
+                        <dt>Links</dt>
+                        <dd>
+                          <div class="plinks">
+                            {it.links.map((l) => (
+                              <a href={l.href} target="_blank" rel="noopener">
+                                {l.label}
+                              </a>
+                            ))}
+                          </div>
+                        </dd>
+                      </div>
+                    )}
+                    <div style="grid-column:1/-1">
+                      <dt>Stack</dt>
+                      <dd>
+                        <ul class="stack">
+                          {it.d.stack.map((s) => (
+                            <li>{s}</li>
+                          ))}
+                        </ul>
+                      </dd>
+                    </div>
+                  </dl>
+                </header>
+                <div class="body">
+                  <Content />
+                </div>
+              </div>
+            </article>
+          );
+        })
+      }
+    </main>
+
+    <script is:inline src="/app.js"></script>
+  </body>
+</html>

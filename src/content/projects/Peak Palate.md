@@ -1,5 +1,6 @@
 ---
 title: Peak Palate
+order: 4
 status: wip
 featured: false
 publish: true
