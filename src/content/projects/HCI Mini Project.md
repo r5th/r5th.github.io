@@ -17,15 +17,14 @@ type: project
 ai-first: true
 ---
 
-For my HCI & AI mini project, I built a tool that turns a government benefits eligibility notice into plain-language bullets — running entirely **on-device** with a small local LLM (Gemma via Ollama), no cloud API. The core HCI problem: a weak model reshapes numbers and hallucinates, so the whole design is about making something trustworthy out of something imperfect.
+## The problem
+Benefits notices are written for the agency, not the reader. The people who most need to understand them — deadlines, amounts, what to do next — are often the least served by the language they're written in. And these documents are too sensitive to paste into a cloud chatbot.
 
-## What I built
-- An extract → simplify → verify pipeline: numbers and deadlines are extracted **verbatim** and highlighted, never freely rewritten, with a regex step that flags any value not present in the source.
-- A 3-panel web UI: a chat grounded only in the uploaded notice (answers cite the exact quote, or say "not in the notice"), the source PDF with per-section highlights, and the plain-language version where each bullet links back to the quote it came from.
-- Bidirectional hover-linking across all three panels — hover a bullet, number, or PDF highlight and a line connects it to its partner.
-- Fully offline: Python standard library only (no pip), vendored PDF.js, local Ollama.
+## The approach
+- Everything runs on-device: a small Gemma model served locally through Ollama. No document ever leaves the machine.
+- PDF.js extracts the notice text in the browser; the rewrite happens against that exact source.
+- Every number in the output is kept verbatim from the original — amounts, dates, and case numbers are never paraphrased.
+- Anything the model can't ground in the source text gets flagged rather than silently included.
 
-## The point
-Designing around a small model's limits — grounding, verbatim extraction, verification, and human-in-the-loop citations — rather than papering over them with a bigger model.
-
-<!-- TODO(Afif): confirm the repo https://github.com/r5th/mini-project-code is public and that 'r5th' is your account (else remove the repo link). -->
+## What I learned
+Small local models are usable for constrained rewriting tasks if you design the task around verification instead of trust — the grounding check mattered more than the model choice.

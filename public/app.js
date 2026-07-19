@@ -147,37 +147,8 @@ function initBulge(){
   }, { passive: true });
 }
 
-/* ---------- Hash router: home <-> project pages ---------- */
-var home = $('#home');
-var pages = {};
-$$('.pp').forEach(function(p){ pages[p.id.replace('pp-', '')] = p; });
-function route(){
-  var h = location.hash;
-  var m = h.match(/^#\/([\w-]+)/);
-  var slug = m ? m[1] : null;
-  $$('.pp').forEach(function(p){ p.hidden = true; });
-  if(slug && pages[slug]){
-    home.hidden = true;
-    pages[slug].hidden = false;
-    window.scrollTo(0, 0);
-    document.title = pages[slug].getAttribute('data-title') + ' — Afif';
-    if(io){ $$('.rv', pages[slug]).forEach(function(el){ io.observe(el); }); }
-  } else {
-    home.hidden = false;
-    document.title = 'Afif — Design & AI';
-    if(h && h !== '#/' && h.indexOf('#/') !== 0){
-      var target = $(h);
-      if(target){
-        var y = target.getBoundingClientRect().top + window.scrollY - 64;
-        window.scrollTo({ top: y, behavior: reduced ? 'auto' : 'smooth' });
-      }
-    } else if(h === '#/'){
-      window.scrollTo(0, 0);
-    }
-  }
-  onScroll();
-}
-window.addEventListener('hashchange', route);
+/* Nav uses real page links + in-page anchors (#work/#about/#contact);
+   projects are their own pages now, so no hash router is needed. */
 
 /* ---------- Loading screen: scramble + shimmer ---------- */
 function runLoader(done){
@@ -226,13 +197,15 @@ function runLoader(done){
 }
 
 /* ---------- Boot ---------- */
-document.body.style.overflow = 'hidden';
-runLoader(function(){
+function boot(){
   document.body.style.overflow = '';
   initReveal();
   initBulge();
-  route();
-});
-// if landing directly on a project URL, route immediately under the loader
-route();
+}
+if($('#loader')){
+  document.body.style.overflow = 'hidden';
+  runLoader(boot);
+} else {
+  boot();
+}
 })();

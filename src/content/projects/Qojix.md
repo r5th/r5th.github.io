@@ -17,14 +17,18 @@ type: project
 ai-first: true
 ---
 
-Qojix is a multi-tenant SaaS platform where an AI assistant ("Qoji") answers WhatsApp and voice enquiries for real-estate agents, qualifies buyers, and books viewings — so agents stop losing leads to slow replies.
+## Why it exists
+Real-estate agents in Singapore and Malaysia run their business out of WhatsApp and phone calls. Enquiries arrive at all hours, and the ones that go unanswered for a few hours tend to go cold. Qojix puts an AI assistant on both channels so every conversation gets picked up immediately, in the agent's voice and with the agent's listings.
 
-## What I built
-- Multi-tenant Postgres data model on Supabase (Agency → Agents → Listings → Slots → Bookings) with row-level security isolating every agency's data.
-- WhatsApp Business API integration handling live agent numbers, with an AI-to-human handoff flow.
-- A public listings portal (property.qojix.ai) with photo galleries served from Supabase Storage, kept strictly separate from private documents and seller data.
-- Stripe billing across four tiers plus a metered voice add-on.
-- Anthropic API driving the conversation logic; Sentry for production monitoring.
+## What it does
+- Answers WhatsApp enquiries about listings, viewings, and availability in natural conversation.
+- Handles inbound voice calls with the same assistant, so a missed call becomes a handled conversation.
+- Hands off to the agent with full context whenever a conversation needs a human.
 
-## Role
-Co-founder — architecture, full-stack build, and go-to-market.
+## How it's built
+- Next.js + TypeScript + Tailwind app on Vercel; Supabase for data and auth, Stripe for billing.
+- Conversations run on the Anthropic API, connected to the WhatsApp Business API via webhooks.
+- Sentry for error tracking across the message pipeline.
+
+## Status
+In progress — live with agents in Singapore and Malaysia, and the product is evolving weekly as we learn from real conversations.

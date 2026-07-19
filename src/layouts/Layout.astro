@@ -1,0 +1,86 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  loader?: boolean;
+}
+const {
+  title = 'Afif — Design & AI',
+  description = 'Afif — Design & Artificial Intelligence student at SUTD, co-founder of Qojix. Builds AI products end to end.',
+  loader = false,
+} = Astro.props;
+const email = 'afif.mto@gmail.com';
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <script is:inline>
+      /* Set theme before first paint */
+      (function () {
+        var t = null;
+        try {
+          t = localStorage.getItem('afif-theme');
+        } catch (e) {}
+        if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    {
+      loader && (
+        <div id="loader" role="status" aria-label="Loading">
+          <div id="loaderName" data-text="WELCOME" aria-hidden="true">
+            WELCOME
+          </div>
+          <div id="loaderTag">Portfolio / 2026</div>
+        </div>
+      )
+    }
+
+    <header id="nav">
+      <div class="wrap bar">
+        <a class="brand" href="/">Afif<em>.</em></a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="/#work">Work</a>
+          <a href="/#about">About</a>
+          <a href="/#contact">Contact</a>
+        </nav>
+        <div class="nav-right">
+          <button class="icon-btn" id="themeBtn" aria-label="Toggle color theme"><span class="ticon"></span></button>
+          <button class="icon-btn" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div id="scrim"></div>
+    <aside id="drawer" aria-label="Menu">
+      <div class="d-head">
+        <span class="mono">Menu</span>
+        <button class="icon-btn" id="drawerClose" aria-label="Close menu">✕</button>
+      </div>
+      <nav>
+        <a href="/#work">Work</a>
+        <a href="/#about">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+      <div class="d-foot mono">{email}</div>
+    </aside>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <script is:inline src="/app.js"></script>
+  </body>
+</html>

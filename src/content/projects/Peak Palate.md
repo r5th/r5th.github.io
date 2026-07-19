@@ -17,11 +17,12 @@ type: project
 ai-first: true
 ---
 
-Peak Palate is a course software project: a Shopify storefront with a WhatsApp ordering flow and an offline logic layer, built for the SDS module.
+## Overview
+Peak Palate is a storefront built on Shopify with an ordering flow that runs through WhatsApp — meeting customers on the channel they already use rather than forcing them through a checkout page.
 
-## What I built
-- Shopify storefront integration (live and verified).
-- WhatsApp / Meta ordering integration on a dedicated number.
-- An offline logic layer for order handling.
+## What's in it
+- A Shopify-integrated storefront for catalogue and inventory.
+- WhatsApp ordering via the WhatsApp Business API.
 
-<!-- TODO(Afif): confirm/expand — exact stack (frontend framework, backend, DB), your specific role on the team, and whether to mark status: completed. Flip featured: true to showcase it. -->
+## Status
+In progress, as coursework for a software design course.

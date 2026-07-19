@@ -17,17 +17,14 @@ type: project
 ai-first: true
 ---
 
-Kuppi is an IoT cleanroom readiness system built with a 4-person team at SUTD (Spring 2026). Staff scan their card, tap a door NFC tag, and walk a 6-zone sanitization checklist on the device — while a live dashboard streams each zone's status to a supervisor in real time. The design targets real cleanroom pressures: cognitive load, language barriers, time pressure, and uncertain standards.
-
-## What I built
-- **Firmware** in C++ on an ESP32, using FreeRTOS across dual cores — sensor/NFC I/O on one core, the on-device UI on the other, so reads stay stable while the screen updates.
-- **The supervisor dashboard** — a Flask + Supabase backend streaming live zone status over Server-Sent Events (SSE) to a real-time web view.
-- **Hardware assembly** — ESP32, PN532 NFC reader, ST7796 TFT display, and LiPo power.
+## The system
+Cleanroom readiness depends on people doing the same sanitization steps, in the same order, every time. Kuppi instruments that process: devices at each zone guide staff through the steps, and a dashboard shows live readiness across zones.
 
 ## How it works
-Scan staff card → tap door NFC → 6 zones appear red → scan each zone tag and complete its checklist → room marked ready.
+- ESP32 nodes run C++ firmware on FreeRTOS, with separate tasks for sensing, step guidance, and network reporting.
+- A Flask backend receives zone events and streams live status to the dashboard over server-sent events.
+- Zone history and state live in PostgreSQL via Supabase.
 
-## What I learned
-- Partitioning tasks across FreeRTOS cores keeps sensor I/O stable while the UI updates in parallel.
-- Simple, high-contrast flows cut errors for non-technical staff working under pressure.
-- Prototype constraints forced prioritizing reliable NFC reads over ambitious enclosure design.
+## My part
+- Wrote the ESP32 firmware — the FreeRTOS task structure and the step-guidance state machine.
+- Built the live dashboard and the SSE pipeline feeding it.

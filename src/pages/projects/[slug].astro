@@ -1,0 +1,88 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+import { slugify } from '../../lib/slug';
+
+export async function getStaticPaths() {
+  const projects = (await getCollection('projects', ({ data }) => data.publish !== false)).sort(
+    (a, b) => (a.data.order ?? 99) - (b.data.order ?? 99),
+  );
+  const total = String(projects.length).padStart(2, '0');
+  return projects.map((entry, i) => ({
+    params: { slug: slugify(entry.data.title) },
+    props: { entry, idx: String(i + 1).padStart(2, '0'), total },
+  }));
+}
+
+const { entry, idx, total } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+const wip = d.status === 'wip';
+const links = [
+  [d.links.live, 'Live ↗'],
+  [d.links.demo, 'Demo ↗'],
+  [d.links.repo, 'Code ↗'],
+  [d.links.video, 'Video ↗'],
+]
+  .filter(([u]) => u && u.length)
+  .map(([href, label]) => ({ href, label }));
+---
+<Layout title={`${d.title} — Afif`} description={d.summary}>
+  <article class="pp">
+    <div class="wrap">
+      <a class="back" href="/">← Index</a>
+      <header class="pp-head">
+        <p class="crumb mono rv">
+          Project {idx} / {total} — {wip ? <span style="color:var(--accent)">In progress</span> : 'Completed'}
+        </p>
+        <h1 class="ptitle rv" data-bulge="">{d.title}</h1>
+        <p class="pp-sum rv">{d.summary}</p>
+        <dl class="pp-meta rv">
+          <div>
+            <dt>Status</dt>
+            <dd>{wip ? 'In progress' : 'Completed'}</dd>
+          </div>
+          {d.role && (
+            <div>
+              <dt>Role</dt>
+              <dd>{d.role}</dd>
+            </div>
+          )}
+          {d.year && (
+            <div>
+              <dt>Year</dt>
+              <dd>{d.year}</dd>
+            </div>
+          )}
+          {links.length > 0 && (
+            <div>
+              <dt>Links</dt>
+              <dd>
+                <div class="plinks">
+                  {links.map((l) => (
+                    <a href={l.href} target="_blank" rel="noopener">
+                      {l.label}
+                    </a>
+                  ))}
+                </div>
+              </dd>
+            </div>
+          )}
+          <div style="grid-column:1/-1">
+            <dt>Stack</dt>
+            <dd>
+              <ul class="stack">
+                {d.stack.map((s) => (
+                  <li>{s}</li>
+                ))}
+              </ul>
+            </dd>
+          </div>
+        </dl>
+      </header>
+      <div class="body rv">
+        <Content />
+      </div>
+    </div>
+  </article>
+</Layout>
