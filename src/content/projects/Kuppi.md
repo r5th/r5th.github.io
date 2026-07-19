@@ -8,7 +8,7 @@ role: "Firmware & dashboard engineer — 4-person team"
 year: 2026
 stack: [C++, FreeRTOS, ESP32, Flask, Supabase, SSE, PostgreSQL]
 tags: [iot, embedded, hardware]
-links: { live: "", demo: "", repo: "", video: "" }
+links: { live: "", demo: "", repo: "https://github.com/uniweeq/kuppi", video: "https://youtu.be/g1X3Cxpo-Yk" }
 source: "https://uniweeq.github.io/projects/kuppi"
 date: 2026-05-01
 updated: 2026-07-19
@@ -30,5 +30,3 @@ Scan staff card → tap door NFC → 6 zones appear red → scan each zone tag a
 - Partitioning tasks across FreeRTOS cores keeps sensor I/O stable while the UI updates in parallel.
 - Simple, high-contrast flows cut errors for non-technical staff working under pressure.
 - Prototype constraints forced prioritizing reliable NFC reads over ambitious enclosure design.
-
-<!-- TODO(Afif): add links if you have them — GitHub repo, demo video, or the case-study page (uniweeq.github.io/projects/kuppi). Confirm year/date (listed as SUTD Spring 2026). -->
