@@ -9,7 +9,7 @@ role: "Solo developer — design and build"
 year: 2026
 stack: [Godot, GDScript]
 tags: [game, worldbuilding, 3d]
-links: { live: "", demo: "https://r5th.github.io/games/rest-in-altitude/", repo: "https://github.com/r5th/rest-in-altitude-game", video: "" }
+links: { live: "", demo: "https://r5th.github.io/games/rest-in-altitude/", repo: "https://github.com/r5th/rest-in-altitude-game", video: "", poster: "/games/rest-in-altitude/docs/poster.pdf", doc: "/games/rest-in-altitude/docs/description.pdf" }
 source: "https://github.com/r5th/rest-in-altitude-game"
 date: 2026-08-08
 updated: 2026-08-08

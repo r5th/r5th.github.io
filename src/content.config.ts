@@ -21,6 +21,8 @@ const projects = defineCollection({
         demo: z.string().optional(),
         repo: z.string().optional(),
         video: z.string().optional(),
+        poster: z.string().optional(),
+        doc: z.string().optional(),
       })
       .default({}),
     updated: z.coerce.date().optional(),
