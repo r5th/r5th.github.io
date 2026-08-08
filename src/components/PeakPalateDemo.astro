@@ -1,0 +1,290 @@
+---
+// Live, functional recreation of the Peak Palate WhatsApp ordering demo — not a screenshot,
+// not an iframe. Talks directly to the same Cloud Run chat endpoint the real product uses.
+// Order top to bottom: phone, cart + group-progress metrics (inline), status, notifications.
+const CHAT_URL = 'https://peak-palate-655120775569.asia-southeast1.run.app/chat';
+---
+
+<div class="ppd" id="ppdRoot" data-chat-url={CHAT_URL}>
+  <p class="mono ppd-eyebrow"><span class="chip live"><i></i></span>Live — running right now</p>
+
+  <div class="ppd-phone">
+    <div class="ppd-notch"></div>
+    <div class="ppd-statusbar"><span>9:41</span><span>●&nbsp;●&nbsp;◒</span></div>
+    <div class="ppd-head">
+      <span class="ppd-avatar">P</span>
+      <div class="ppd-contact"><b>Peak Palate</b><small>online · typically replies instantly</small></div>
+      <button type="button" class="ppd-reset" id="ppdReset" aria-label="Reset demo">↻</button>
+    </div>
+    <div class="ppd-messages" id="ppdMessages"><div class="ppd-day">TODAY</div></div>
+    <div class="ppd-suggestions" id="ppdSuggestions"></div>
+    <form class="ppd-compose" id="ppdForm">
+      <input id="ppdInput" autocomplete="off" placeholder="Message" />
+      <button type="submit" aria-label="Send">➤</button>
+    </form>
+  </div>
+
+  <div class="ppd-metrics">
+    <div class="ppd-tile">
+      <span class="mono">Cart</span>
+      <b id="ppdCart">Empty</b>
+    </div>
+    <div class="ppd-tile">
+      <span class="mono">Group progress</span>
+      <b id="ppdProgressText">0 / 10</b>
+      <div class="ppd-progress"><i id="ppdProgressBar"></i></div>
+    </div>
+  </div>
+
+  <div class="ppd-card">
+    <span class="mono">Status</span>
+    <div class="ppd-state" id="ppdState">Starting session</div>
+    <div class="ppd-flow" id="ppdFlow"></div>
+  </div>
+
+  <div class="ppd-card">
+    <span class="mono">Notifications</span>
+    <p class="ppd-optin" id="ppdOptin">Buyers join the notify list after ordering</p>
+  </div>
+</div>
+
+<script>
+  const root = document.getElementById('ppdRoot');
+  if (root) {
+    const CHAT_URL = root.dataset.chatUrl!;
+    const $ = (s: string) => root.querySelector(s) as HTMLElement;
+    const messages = $('#ppdMessages');
+    const input = $('#ppdInput') as HTMLInputElement;
+    const suggestions = $('#ppdSuggestions');
+
+    const STAGES = [
+      'Choose order type',
+      'Join or create group',
+      'Build cart naturally',
+      'Review & confirm',
+      'Delivery & payment',
+      'Shopify checkout',
+    ];
+    const STAGE_IX: Record<string, number> = {
+      idle: 0, choosing_type: 0, awaiting_group_id: 1, ordering: 2, confirming: 3,
+      awaiting_address: 4, awaiting_payment_mode: 4, placed: 5, done: 6,
+    };
+    const STATE_LABEL: Record<string, string> = {
+      idle: 'Starting session', choosing_type: 'Choosing order type', awaiting_group_id: 'Awaiting group ID',
+      ordering: 'Building cart', confirming: 'Awaiting confirmation', awaiting_address: 'Capturing address',
+      awaiting_payment_mode: 'Capturing payment mode', placed: 'Order placed — window open', done: 'Order created',
+    };
+    const PRESETS: Record<string, string[]> = {
+      idle: [], choosing_type: ['1 · Individual', '2 · Group buy'], awaiting_group_id: ['GB018-SUTD', 'NEW'],
+      ordering: [], confirming: ['CONFIRM', 'EDIT', 'CANCEL'], awaiting_address: ['8 Somapah Rd, #03-12, S487372'],
+      awaiting_payment_mode: ['1 · PayNow', '2 · Card at peakpalate.com'],
+      placed: ['YES', 'EDIT', '🔧 /closewindow', '🔧 /closewindow CONFIRM'], done: ['YES', 'Start another order'],
+    };
+
+    let FROM = 'web-' + Math.random().toString(36).slice(2, 12);
+    let shownInvoice: string | null = null;
+    let meta: any = { state: 'idle', cartQty: 0, group: null, groupBuyId: null, optIn: false, catalogue: [] };
+
+    function orderingPresets() {
+      const n = meta.catalogue || [];
+      if (!n.length) return ['DONE'];
+      return [n.length > 1 ? `2 ${n[0]} and 1 ${n[1]}` : `2 ${n[0]}`, `remove 1 ${n[0]}`, 'DONE'];
+    }
+    function time() {
+      return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+    function esc(s: string) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+    function bubble(text: string, who: 'bot' | 'user') {
+      const d = document.createElement('div');
+      d.className = 'ppd-bubble ' + who;
+      d.innerHTML =
+        esc(text)
+          .replace(/\*([^*]+)\*/g, '<b>$1</b>')
+          .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>')
+          .replace(/\n/g, '<br>') +
+        `<span class="ppd-time">${time()}${who === 'user' ? ' <span class="ppd-ticks">✓✓</span>' : ''}</span>`;
+      messages.append(d);
+      messages.scrollTop = messages.scrollHeight;
+      return d;
+    }
+    function showTyping() {
+      const t = document.createElement('div');
+      t.className = 'ppd-bubble bot ppd-typing';
+      t.innerHTML = '<i></i><i></i><i></i>';
+      messages.append(t);
+      messages.scrollTop = messages.scrollHeight;
+      return t;
+    }
+    async function post(text: string) {
+      const typing = showTyping();
+      try {
+        const res = await fetch(CHAT_URL, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ from: FROM, text }),
+        });
+        const data = await res.json();
+        typing.remove();
+        if (!res.ok || data.error) {
+          bubble('⚠️ ' + (data.error || 'Server error'), 'bot');
+          return;
+        }
+        (data.replies || []).forEach((r: string) => bubble(r, 'bot'));
+        if (data.invoiceUrl && data.invoiceUrl !== shownInvoice && !(data.replies || []).some((r: string) => r.includes(data.invoiceUrl))) {
+          shownInvoice = data.invoiceUrl;
+          bubble(`The order window is closed — thank you for ordering with us!\nPay securely here: ${data.invoiceUrl}`, 'bot');
+        }
+        meta = data;
+        render();
+      } catch {
+        typing.remove();
+        bubble('⚠️ Connection error — is the chat function deployed?', 'bot');
+      }
+    }
+    function send(text: string) {
+      text = (text || '').trim();
+      if (!text) return;
+      bubble(text, 'user');
+      input.value = '';
+      post(text);
+    }
+    function fastForward() {
+      const gid = 'GB' + (100 + Math.floor(Math.random() * 900)) + '-SG';
+      const d = document.createElement('div');
+      d.className = 'ppd-day';
+      d.textContent = '3 DAYS LATER';
+      messages.append(d);
+      bubble(
+        `🛒 A new Peak Palate group order is open!\nOrder before the window closes — everyone gets 10% off once the group hits the threshold.\n\nReply *JOIN ${gid}* to add your items.`,
+        'bot',
+      );
+    }
+    function render() {
+      const st = meta.state || 'idle';
+      const ix = STAGE_IX[st] ?? 0;
+      $('#ppdState').textContent = STATE_LABEL[st] || '…';
+      $('#ppdFlow').innerHTML = STAGES.map(
+        (s, i) =>
+          `<div class="ppd-step ${i === ix ? 'active' : i < ix ? 'done' : ''}"><span class="ppd-num">${i < ix ? '✓' : i + 1}</span>${s}</div>${i < STAGES.length - 1 ? '<div class="ppd-arrow"></div>' : ''}`,
+      ).join('');
+      const qty = meta.cartQty || 0;
+      $('#ppdCart').textContent = qty ? `${qty} item${qty > 1 ? 's' : ''}` : 'Empty';
+      const g = meta.group;
+      const thr = g && g.threshold ? g.threshold : 10;
+      const tot = g ? Math.min(g.total, thr) : 0;
+      $('#ppdProgressText').textContent = `${tot} / ${thr}`;
+      (document.getElementById('ppdProgressBar') as HTMLElement).style.width = (thr ? Math.min((tot / thr) * 100, 100) : 0) + '%';
+      let presets = PRESETS[st] || [];
+      if (st === 'ordering') presets = orderingPresets();
+      if (st === 'done') presets = meta.optIn ? ['⏭ Pass time — next window opens', 'Start another order'] : ['YES', 'Start another order'];
+      suggestions.innerHTML = presets.map((x) => `<button type="button">${x}</button>`).join('');
+      suggestions.querySelectorAll('button').forEach((b) => {
+        b.addEventListener('click', () => {
+          const t = b.textContent || '';
+          if (t.includes('Pass time')) { fastForward(); return; }
+          const m = t.match(/^(\d) · /);
+          send(m ? m[1] : t.replace(/^🔧 /, ''));
+        });
+      });
+      const optin = $('#ppdOptin');
+      optin.textContent = meta.optIn ? '🔔 Buyer is on the notify list' : 'Buyers join the notify list after ordering';
+    }
+    function reset() {
+      FROM = 'web-' + Math.random().toString(36).slice(2, 12);
+      shownInvoice = null;
+      messages.innerHTML = '<div class="ppd-day">TODAY</div>';
+      meta = { state: 'idle', cartQty: 0, group: null, groupBuyId: null, optIn: false, catalogue: [] };
+      render();
+      post('hi');
+    }
+    (root.querySelector('#ppdForm') as HTMLFormElement).addEventListener('submit', (e) => {
+      e.preventDefault();
+      send(input.value);
+    });
+    ($('#ppdReset') as HTMLButtonElement).addEventListener('click', reset);
+    reset();
+  }
+</script>
+
+<style>
+  .ppd { display: flex; flex-direction: column; gap: 20px; }
+  .ppd-eyebrow { display: flex; align-items: center; gap: 8px; }
+  .ppd-eyebrow .chip { font-size: 11px; }
+
+  /* ---------- Phone: keeps the product's own WhatsApp identity, not the site's palette ---------- */
+  .ppd-phone {
+    --wa: #075e54; --wa-bubble-bot: #fff; --wa-bubble-user: #d9fdd3;
+    width: 100%; max-width: 320px; margin: 0 auto;
+    background: #111; border: 7px solid #1a1a1a; border-radius: 38px; padding: 6px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    position: relative;
+  }
+  .ppd-notch {
+    position: absolute; z-index: 5; top: 14px; left: 50%; transform: translateX(-50%);
+    width: 80px; height: 20px; background: #111; border-radius: 14px;
+  }
+  .ppd-phone > *:not(.ppd-notch) { position: relative; }
+  .ppd-statusbar {
+    height: 30px; background: var(--wa); color: #fff; display: flex; align-items: center;
+    justify-content: space-between; padding: 4px 16px 0; font-size: 10px; font-weight: 700;
+    border-radius: 31px 31px 0 0;
+  }
+  .ppd-head { height: 54px; background: var(--wa); color: #fff; display: flex; align-items: center; padding: 6px 10px; gap: 9px; }
+  .ppd-avatar { width: 33px; height: 33px; background: #d9f26a; border-radius: 50%; display: grid; place-items: center; color: #1f6845; font-weight: 900; flex-shrink: 0; }
+  .ppd-contact { flex: 1; min-width: 0; }
+  .ppd-contact b { display: block; font-size: 13px; }
+  .ppd-contact small { font-size: 10px; opacity: 0.78; }
+  .ppd-reset { background: none; border: 0; color: #fff; opacity: 0.85; font-size: 15px; cursor: pointer; padding: 6px; line-height: 1; }
+  .ppd-reset:hover { opacity: 1; }
+  .ppd-messages {
+    height: 340px; padding: 12px 9px 6px; overflow-y: auto; scroll-behavior: smooth;
+    background: #e9e4da;
+  }
+  .ppd-day { text-align: center; margin: 0 auto 12px; font-size: 10px; background: #fff8; padding: 5px 10px; border-radius: 7px; width: max-content; color: #5e6c63; }
+  .ppd-bubble {
+    font-size: 12px; line-height: 1.43; max-width: 88%; padding: 8px 9px 6px; margin-bottom: 6px;
+    border-radius: 8px; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12); white-space: pre-line; overflow-wrap: anywhere;
+    color: #1a231d;
+  }
+  .ppd-bubble.bot { background: var(--wa-bubble-bot); border-top-left-radius: 2px; }
+  .ppd-bubble.user { background: var(--wa-bubble-user); margin-left: auto; border-top-right-radius: 2px; }
+  .ppd-bubble :global(a) { color: #1f6845; }
+  .ppd-time { font-size: 9px; color: #7a837d; float: right; margin: 7px 0 0 12px; }
+  .ppd-ticks { color: #46a5c4; font-weight: bold; }
+  .ppd-typing { display: flex; gap: 3px; width: 40px; padding: 11px 12px; }
+  .ppd-typing i { width: 5px; height: 5px; background: #8b948f; border-radius: 50%; animation: ppdDot 1s infinite; display: inline-block; }
+  .ppd-typing i:nth-child(2) { animation-delay: 0.15s; }
+  .ppd-typing i:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes ppdDot { 50% { opacity: 0.25; transform: translateY(-2px); } }
+  .ppd-suggestions { display: flex; gap: 5px; overflow-x: auto; padding: 6px 9px; background: #f4f0e9; min-height: 33px; }
+  .ppd-suggestions button {
+    white-space: nowrap; border: 1px solid #cbd7cd; background: #fff; color: #1f6845; font: 700 10px inherit;
+    border-radius: 99px; padding: 5px 9px; cursor: pointer;
+  }
+  .ppd-compose { height: 48px; background: #f0f2f0; display: flex; align-items: center; padding: 7px; gap: 6px; border-radius: 0 0 31px 31px; }
+  .ppd-compose input { flex: 1; background: #fff; border: 0; outline: 0; border-radius: 22px; padding: 10px 13px; color: #263129; font-size: 12px; }
+  .ppd-compose button { border: 0; width: 34px; height: 34px; border-radius: 50%; background: #1b8b71; color: #fff; font-size: 15px; cursor: pointer; flex-shrink: 0; }
+
+  /* ---------- Metrics / status / notifications: the site's own dark editorial system ---------- */
+  .ppd-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ppd-tile, .ppd-card {
+    border: 1px solid var(--line); border-radius: 4px; padding: 14px;
+  }
+  .ppd-tile span, .ppd-card > span {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2);
+  }
+  .ppd-tile b { display: block; font-size: 17px; margin-top: 5px; }
+  .ppd-progress { height: 5px; background: var(--line-soft); border-radius: 4px; margin-top: 8px; overflow: hidden; }
+  .ppd-progress i { display: block; height: 100%; width: 0; background: var(--accent); transition: 0.4s; }
+  .ppd-state { font-size: 15px; font-weight: 640; margin: 6px 0 14px; color: var(--accent); }
+  .ppd-flow { display: flex; flex-direction: column; gap: 3px; }
+  .ppd-step { display: flex; gap: 10px; align-items: center; padding: 6px 4px; border-radius: 4px; color: var(--ink-2); font-size: 12px; }
+  .ppd-step .ppd-num { width: 20px; height: 20px; border: 1px solid var(--line); border-radius: 5px; display: grid; place-items: center; font-size: 9px; font-weight: 800; flex-shrink: 0; }
+  .ppd-step.active { color: var(--ink); font-weight: 640; }
+  .ppd-step.active .ppd-num { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .ppd-step.done .ppd-num { background: var(--line); color: var(--ink-2); }
+  .ppd-arrow { height: 7px; border-left: 1px dashed var(--line); margin-left: 14px; }
+  .ppd-optin { font-size: 13px; color: var(--ink-2); margin: 6px 0 0; }
+</style>
