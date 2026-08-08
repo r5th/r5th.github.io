@@ -2,7 +2,6 @@
 import Layout from '../../layouts/Layout.astro';
 import { getCollection, render } from 'astro:content';
 import { slugify } from '../../lib/slug';
-import PeakPalateDemo from '../../components/PeakPalateDemo.astro';
 
 export async function getStaticPaths() {
   const projects = (await getCollection('projects', ({ data }) => data.publish !== false)).sort(
@@ -19,8 +18,6 @@ const { entry, idx, total } = Astro.props;
 const { Content } = await render(entry);
 const d = entry.data;
 const wip = d.status === 'wip';
-const hasDemo = Boolean(d.links.demo && d.links.demo.startsWith('http'));
-const isPeakPalate = d.title === 'Peak Palate';
 const links = [
   [d.links.live, 'Live ↗'],
   [d.links.demo, 'Demo ↗'],
@@ -85,41 +82,9 @@ const links = [
           </div>
         </dl>
       </header>
-      {isPeakPalate ? (
-        <div class="pp-cols">
-          <div class="body rv">
-            <Content />
-          </div>
-          <aside class="rv">
-            <PeakPalateDemo />
-          </aside>
-        </div>
-      ) : hasDemo ? (
-        <div class="pp-cols">
-          <div class="body rv">
-            <Content />
-          </div>
-          <aside class="embed rv">
-            <p class="mono embed-eyebrow"><span class="chip live"><i /></span>Live — running right now</p>
-            <div class="embed-frame">
-              <div class="embed-bar">
-                <span class="embed-url">{d.links.demo.replace(/^https?:\/\//, '')}</span>
-                <a href={d.links.demo} target="_blank" rel="noopener">Open full ↗</a>
-              </div>
-              <iframe
-                src={d.links.demo}
-                title={`${d.title} — live demo`}
-                loading="lazy"
-                sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-              />
-            </div>
-          </aside>
-        </div>
-      ) : (
-        <div class="body rv">
-          <Content />
-        </div>
-      )}
+      <div class="body rv">
+        <Content />
+      </div>
     </div>
   </article>
 </Layout>

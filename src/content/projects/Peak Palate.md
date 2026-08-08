@@ -20,6 +20,22 @@ ai-first: true
 ## Overview
 Peak Palate is a WhatsApp-first grocery group-buying storefront for a real client (Venture Sense / Harvest Direct), built as a software design course project. Buyers order in plain language over WhatsApp; the system parses the message, tells apart individual and group-buy orders, consolidates them, and lands them in Shopify Admin, which the client uses as the operational dashboard.
 
+<div class="embed">
+  <p class="mono embed-eyebrow"><span class="chip live"><i></i></span>Live — running right now</p>
+  <div class="embed-frame">
+    <div class="embed-bar">
+      <span class="embed-url">peak-palate-655120775569.asia-southeast1.run.app</span>
+      <a href="https://peak-palate-655120775569.asia-southeast1.run.app/" target="_blank" rel="noopener">Open full ↗</a>
+    </div>
+    <iframe
+      src="https://peak-palate-655120775569.asia-southeast1.run.app/"
+      title="Peak Palate — live demo"
+      loading="lazy"
+      sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+    ></iframe>
+  </div>
+</div>
+
 ## How it works
 - Meta's WhatsApp Cloud API receives the buyer's message and hands it to a Supabase Edge Function.
 - Claude (Haiku for parsing, Opus where quality matters) turns the message into structured items and intent.
