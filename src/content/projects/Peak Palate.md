@@ -9,7 +9,7 @@ role: "Developer"
 year: 2026
 stack: [Shopify, Supabase, Claude, WhatsApp Business API, Deno]
 tags: [ecommerce, coursework, whatsapp]
-links: { live: "", demo: "", repo: "https://github.com/r5th/peak-palate", video: "" }
+links: { live: "", demo: "https://peak-palate-655120775569.asia-southeast1.run.app/", repo: "https://github.com/r5th/peak-palate", video: "" }
 source: "obsidian://open?vault=school&file=SDS/Admin/Peak%20Palate%20Progress%20Log"
 date: 2026-07-09
 updated: 2026-08-08

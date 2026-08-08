@@ -82,6 +82,23 @@ const links = [
           </div>
         </dl>
       </header>
+      {d.links.demo && d.links.demo.startsWith('http') && (
+        <div class="embed rv">
+          <p class="mono embed-eyebrow"><span class="chip live"><i /></span>Live — running right now</p>
+          <div class="embed-frame">
+            <div class="embed-bar">
+              <span class="embed-url">{d.links.demo.replace(/^https?:\/\//, '')}</span>
+              <a href={d.links.demo} target="_blank" rel="noopener">Open full ↗</a>
+            </div>
+            <iframe
+              src={d.links.demo}
+              title={`${d.title} — live demo`}
+              loading="lazy"
+              sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+            />
+          </div>
+        </div>
+      )}
       <div class="body rv">
         <Content />
       </div>
