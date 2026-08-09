@@ -85,6 +85,57 @@ const links = [
       <div class="body rv">
         <Content />
       </div>
+      {d.shots.length > 0 && (
+        <section class="shots rv" aria-label="Screenshots">
+          {d.shots.map((s, i) => (
+            <figure class="shot">
+              <img
+                src={s.src}
+                alt={s.alt}
+                loading={i === 0 ? 'eager' : 'lazy'}
+                decoding="async"
+                width="1600"
+                height="900"
+              />
+              {s.caption && <figcaption>{s.caption}</figcaption>}
+            </figure>
+          ))}
+        </section>
+      )}
     </div>
   </article>
 </Layout>
+
+<style>
+  .shots {
+    margin-top: 3.5rem;
+    display: grid;
+    gap: 1.75rem;
+  }
+  /* Two up from tablet width. The first shot stays full width: it is the
+     establishing image and loses too much at half size. */
+  @media (min-width: 720px) {
+    .shots {
+      grid-template-columns: 1fr 1fr;
+    }
+    .shot:first-child {
+      grid-column: 1 / -1;
+    }
+  }
+  .shot {
+    margin: 0;
+  }
+  .shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 3px;
+    background: #0b0e17; /* the game's own night sky, so a slow load is not a white flash */
+  }
+  .shot figcaption {
+    margin-top: 0.6rem;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    opacity: 0.68;
+  }
+</style>
