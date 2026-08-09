@@ -9,7 +9,7 @@ role: "Solo developer — design and build, with subagent-assisted implementatio
 year: 2026
 stack: [Godot, GDScript]
 tags: [game, worldbuilding, 3d]
-links: { live: "https://r5th.github.io/star-mirror-tower/", demo: "https://r5th.github.io/star-mirror-tower/", repo: "https://github.com/r5th/star-mirror-tower", video: "", poster: "", doc: "" }
+links: { live: "", demo: "https://r5th.github.io/star-mirror-tower/", repo: "https://github.com/r5th/star-mirror-tower", video: "", poster: "", doc: "" }
 source: "https://github.com/r5th/star-mirror-tower"
 date: 2026-08-09
 updated: 2026-08-09
