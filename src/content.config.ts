@@ -15,6 +15,19 @@ const projects = defineCollection({
     stack: z.array(z.string()).default([]),
     tags: z.array(z.string()).default([]),
     cover: z.string().optional(),
+    // Screenshot gallery. Paths are site-absolute (e.g. /shots/foo/bar.jpg).
+    // Every shot needs alt text: these carry most of what a visual project
+    // communicates, so leaving them undescribed loses the work entirely for
+    // anyone not seeing them.
+    shots: z
+      .array(
+        z.object({
+          src: z.string(),
+          alt: z.string(),
+          caption: z.string().optional(),
+        }),
+      )
+      .default([]),
     links: z
       .object({
         live: z.string().optional(),
