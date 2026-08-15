@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "project": {
-    "name": "peak-palate",
+    "name": "find-together-lobang",
     "languages": [
       "config",
       "dockerfile",

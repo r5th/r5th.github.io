@@ -51,12 +51,12 @@ The full codebase (109 files, 249 nodes, 557 edges) mapped and browsable as a kn
   <p class="mono embed-eyebrow"><span class="chip"><i></i></span>Interactive — explore the graph</p>
   <div class="embed-frame">
     <div class="embed-bar">
-      <span class="embed-url">peak-palate architecture graph</span>
+      <span class="embed-url">find-together-lobang architecture graph</span>
       <a href="/projects/peak-palate/architecture/" target="_blank" rel="noopener">Open full ↗</a>
     </div>
     <iframe
       src="/projects/peak-palate/architecture/"
-      title="Peak Palate — architecture graph"
+      title="Find Together Lobang — architecture graph"
       loading="lazy"
       sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
     ></iframe>
