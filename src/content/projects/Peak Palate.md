@@ -9,7 +9,7 @@ role: "Developer"
 year: 2026
 stack: [Shopify, Supabase, Claude, WhatsApp Business API, Deno]
 tags: [ecommerce, coursework, whatsapp]
-links: { live: "", demo: "https://peak-palate-655120775569.asia-southeast1.run.app/", repo: "https://github.com/r5th/peak-palate", video: "" }
+links: { live: "", demo: "https://find-together-lobang-655120775569.asia-southeast1.run.app/", repo: "https://github.com/r5th/peak-palate", video: "" }
 source: "obsidian://open?vault=school&file=SDS/Admin/Peak%20Palate%20Progress%20Log"
 date: 2026-07-09
 updated: 2026-08-15
@@ -24,11 +24,11 @@ Peak Palate is a WhatsApp-first grocery group-buying storefront for a real clien
   <p class="mono embed-eyebrow"><span class="chip live"><i></i></span>Live — running right now</p>
   <div class="embed-frame">
     <div class="embed-bar">
-      <span class="embed-url">peak-palate-655120775569.asia-southeast1.run.app</span>
-      <a href="https://peak-palate-655120775569.asia-southeast1.run.app/" target="_blank" rel="noopener">Open full ↗</a>
+      <span class="embed-url">find-together-lobang-655120775569.asia-southeast1.run.app</span>
+      <a href="https://find-together-lobang-655120775569.asia-southeast1.run.app/" target="_blank" rel="noopener">Open full ↗</a>
     </div>
     <iframe
-      src="https://peak-palate-655120775569.asia-southeast1.run.app/"
+      src="https://find-together-lobang-655120775569.asia-southeast1.run.app/"
       title="Peak Palate — live demo"
       loading="lazy"
       sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
