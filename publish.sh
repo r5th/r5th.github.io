@@ -27,9 +27,21 @@ SCAN=("$CONTENT")
 echo "==> Security gate 1/2: file types"
 # grep -I skips binaries, so a PDF could carry an ID or address straight past the
 # text scan. Publishable content is markdown and images only; anything else aborts.
-BAD=$(find "${SCAN[@]}" -type f \
+#
+# Exception: pre-built static web bundles dropped under a project's own
+# "architecture/" dir (e.g. an Understand-Anything graph viewer). These are
+# generated build output, not vault content, so the .md/image rule doesn't fit
+# them — but they still go through gate 2 below (secret/PII regex scan) like
+# everything else. Scoped to */architecture/* so this doesn't loosen the rule
+# for anything else under public/projects/.
+BAD=$(find "${SCAN[@]}" -type f -not -path '*/architecture/*' \
   ! -iname '*.md' ! -iname '*.png' ! -iname '*.jpg' ! -iname '*.jpeg' \
-  ! -iname '*.svg' ! -iname '*.webp' ! -iname '*.gif' ! -iname '.DS_Store' -print)
+  ! -iname '*.svg' ! -iname '*.webp' ! -iname '*.gif' ! -iname '.DS_Store' -print
+find "${SCAN[@]}" -type f -path '*/architecture/*' \
+  ! -iname '*.md' ! -iname '*.png' ! -iname '*.jpg' ! -iname '*.jpeg' \
+  ! -iname '*.svg' ! -iname '*.webp' ! -iname '*.gif' ! -iname '.DS_Store' \
+  ! -iname '*.js' ! -iname '*.css' ! -iname '*.html' ! -iname '*.json' \
+  ! -iname '*.ico' -print)
 if [ -n "$BAD" ]; then
   echo "$BAD" >&2
   echo "!!! ABORT: non-publishable file type in content above. Nothing built or pushed." >&2
