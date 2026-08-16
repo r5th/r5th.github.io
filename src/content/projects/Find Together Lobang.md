@@ -18,7 +18,7 @@ ai-first: true
 ---
 
 ## Overview
-Find Together Lobang is a WhatsApp-first grocery group-buying storefront for a real client (LuluSense / Harvest Direct), built as a software design course project. Buyers order in plain language over WhatsApp; the system parses the message, tells apart individual and group-buy orders, consolidates them, and lands them in Shopify Admin, which the client uses as the operational dashboard.
+Find Together Lobang is a WhatsApp-first grocery group-buying storefront for a real client (LuluSense), built as a software design course project. Buyers order in plain language over WhatsApp; the system parses the message, tells apart individual and group-buy orders, consolidates them, and lands them in Shopify Admin, which the client uses as the operational dashboard.
 
 <div class="embed">
   <p class="mono embed-eyebrow"><span class="chip live"><i></i></span>Live — running right now</p>
