@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Kuppi — Afif</title><meta name="description" content="An IoT cleanroom readiness system that guides staff through consistent sanitization steps while streaming live zone status to a dashboard."><script>
+      /* Set theme before first paint */
+      (function () {
+        var t = null;
+        try {
+          t = localStorage.getItem('afif-theme');
+        } catch (e) {}
+        if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script><link rel="stylesheet" href="/_astro/slug.Ce2XJZvO.css"><style>.shots[data-astro-cid-yq2gsstb]{gap:1.75rem;margin-top:3.5rem;display:grid}@media (width>=720px){.shots[data-astro-cid-yq2gsstb]{grid-template-columns:1fr 1fr}.shot[data-astro-cid-yq2gsstb]:first-child{grid-column:1/-1}}.shot[data-astro-cid-yq2gsstb]{margin:0}.shot[data-astro-cid-yq2gsstb] img[data-astro-cid-yq2gsstb]{background:#0b0e17;border-radius:3px;width:100%;height:auto;display:block}.shot[data-astro-cid-yq2gsstb] figcaption[data-astro-cid-yq2gsstb]{opacity:.68;margin-top:.6rem;font-size:.82rem;line-height:1.5}
+</style></head><body><a class="skip" href="#main">Skip to content</a><header id="nav"><div class="wrap bar"><a class="brand" href="/">Afif<em>.</em></a><nav class="nav-links" aria-label="Primary"><a href="/#work">Work</a><a href="/#about">About</a><a href="/#contact">Contact</a></nav><div class="nav-right"><button class="icon-btn" id="themeBtn" aria-label="Toggle color theme"><span class="ticon"></span></button><button class="icon-btn" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer"><span></span><span></span><span></span></button></div></div></header><div id="scrim"></div><aside id="drawer" aria-label="Menu"><div class="d-head"><span class="mono">Menu</span><button class="icon-btn" id="drawerClose" aria-label="Close menu">✕</button></div><nav><a href="/#work">Work</a><a href="/#about">About</a><a href="/#contact">Contact</a></nav><div class="d-foot mono">afif.mto@gmail.com</div></aside><main id="main"><article class="pp" data-astro-cid-yq2gsstb><div class="wrap" data-astro-cid-yq2gsstb><a class="back" href="/" data-astro-cid-yq2gsstb>← Index</a><header class="pp-head" data-astro-cid-yq2gsstb><p class="crumb mono rv" data-astro-cid-yq2gsstb>Project 03 / 06 — Completed</p><h1 class="ptitle rv" data-bulge="" data-astro-cid-yq2gsstb>Kuppi</h1><p class="pp-sum rv" data-astro-cid-yq2gsstb>An IoT cleanroom readiness system that guides staff through consistent sanitization steps while streaming live zone status to a dashboard.</p><dl class="pp-meta rv" data-astro-cid-yq2gsstb><div data-astro-cid-yq2gsstb><dt data-astro-cid-yq2gsstb>Status</dt><dd data-astro-cid-yq2gsstb>Completed</dd></div><div data-astro-cid-yq2gsstb><dt data-astro-cid-yq2gsstb>Role</dt><dd data-astro-cid-yq2gsstb>Firmware &amp; dashboard engineer — 4-person team</dd></div><div data-astro-cid-yq2gsstb><dt data-astro-cid-yq2gsstb>Year</dt><dd data-astro-cid-yq2gsstb>2026</dd></div><div data-astro-cid-yq2gsstb><dt data-astro-cid-yq2gsstb>Links</dt><dd data-astro-cid-yq2gsstb><div class="plinks" data-astro-cid-yq2gsstb><a href="https://github.com/uniweeq/kuppi" target="_blank" rel="noopener" data-astro-cid-yq2gsstb>Code ↗</a><a href="https://youtu.be/g1X3Cxpo-Yk" target="_blank" rel="noopener" data-astro-cid-yq2gsstb>Video ↗</a></div></dd></div><div style="grid-column:1/-1" data-astro-cid-yq2gsstb><dt data-astro-cid-yq2gsstb>Stack</dt><dd data-astro-cid-yq2gsstb><ul class="stack" data-astro-cid-yq2gsstb><li data-astro-cid-yq2gsstb>C++</li><li data-astro-cid-yq2gsstb>FreeRTOS</li><li data-astro-cid-yq2gsstb>ESP32</li><li data-astro-cid-yq2gsstb>Flask</li><li data-astro-cid-yq2gsstb>Supabase</li><li data-astro-cid-yq2gsstb>SSE</li><li data-astro-cid-yq2gsstb>PostgreSQL</li></ul></dd></div></dl></header><div class="body rv" data-astro-cid-yq2gsstb><h2 id="the-system">The system</h2>
+<p>Cleanroom readiness depends on people doing the same sanitization steps, in the same order, every time. Kuppi instruments that process: devices at each zone guide staff through the steps, and a dashboard shows live readiness across zones.</p>
+<h2 id="how-it-works">How it works</h2>
+<ul>
+<li>ESP32 nodes run C++ firmware on FreeRTOS, with separate tasks for sensing, step guidance, and network reporting.</li>
+<li>A Flask backend receives zone events and streams live status to the dashboard over server-sent events.</li>
+<li>Zone history and state live in PostgreSQL via Supabase.</li>
+</ul>
+<h2 id="my-part">My part</h2>
+<ul>
+<li>Wrote the ESP32 firmware — the FreeRTOS task structure and the step-guidance state machine.</li>
+<li>Built the live dashboard and the SSE pipeline feeding it.</li>
+</ul>
+</div></div></article></main><script src="/app.js"></script></body></html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Find Together Lobang — Afif</title><meta name="description" content="A Shopify-integrated storefront with WhatsApp ordering, built for a software design course."><script>
+      /* Set theme before first paint */
+      (function () {
+        var t = null;
+        try {
+          t = localStorage.getItem('afif-theme');
+        } catch (e) {}
+        if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script><link rel="stylesheet" href="/_astro/slug.Ce2XJZvO.css"><style>.shots[data-astro-cid-yq2gsstb]{gap:1.75rem;margin-top:3.5rem;display:grid}@media (width>=720px){.shots[data-astro-cid-yq2gsstb]{grid-template-columns:1fr 1fr}.shot[data-astro-cid-yq2gsstb]:first-child{grid-column:1/-1}}.shot[data-astro-cid-yq2gsstb]{margin:0}.shot[data-astro-cid-yq2gsstb] img[data-astro-cid-yq2gsstb]{background:#0b0e17;border-radius:3px;width:100%;height:auto;display:block}.shot[data-astro-cid-yq2gsstb] figcaption[data-astro-cid-yq2gsstb]{opacity:.68;margin-top:.6rem;font-size:.82rem;line-height:1.5}
+</style></head><body><a class="skip" href="#main">Skip to content</a><header id="nav"><div class="wrap bar"><a class="brand" href="/">Afif<em>.</em></a><nav class="nav-links" aria-label="Primary"><a href="/#work">Work</a><a href="/#about">About</a><a href="/#contact">Contact</a></nav><div class="nav-right"><button class="icon-btn" id="themeBtn" aria-label="Toggle color theme"><span class="ticon"></span></button><button class="icon-btn" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer"><span></span><span></span><span></span></button></div></div></header><div id="scrim"></div><aside id="drawer" aria-label="Menu"><div class="d-head"><span class="mono">Menu</span><button class="icon-btn" id="drawerClose" aria-label="Close menu">✕</button></div><nav><a href="/#work">Work</a><a href="/#about">About</a><a href="/#contact">Contact</a></nav><div class="d-foot mono">afif.mto@gmail.com</div></aside><main id="main"><article class="pp" data-astro-cid-yq2gsstb><div class="wrap" data-astro-cid-yq2gsstb><a class="back" href="/" data-astro-cid-yq2gsstb>← Index</a><header class="pp-head" data-astro-cid-yq2gsstb><p class="crumb mono rv" data-astro-cid-yq2gsstb>Project 04 / 06 — <span style="color:var(--accent)" data-astro-cid-yq2gsstb>In progress</span></p><h1 class="ptitle rv" data-bulge="" data-astro-cid-yq2gsstb>Find Together Lobang</h1><p class="pp-sum rv" data-astro-cid-yq2gsstb>A Shopify-integrated storefront with WhatsApp ordering, built for a software design course.</p><dl class="pp-meta rv" data-astro-cid-yq2gsstb><div data-astro-cid-yq2gsstb><dt data-astro-cid-yq2gsstb>Status</dt><dd data-astro-cid-yq2gsstb>In progress</dd></div><div data-astro-cid-yq2gsstb><dt data-astro-cid-yq2gsstb>Role</dt><dd data-astro-cid-yq2gsstb>Developer</dd></div><div data-astro-cid-yq2gsstb><dt data-astro-cid-yq2gsstb>Year</dt><dd data-astro-cid-yq2gsstb>2026</dd></div><div data-astro-cid-yq2gsstb><dt data-astro-cid-yq2gsstb>Links</dt><dd data-astro-cid-yq2gsstb><div class="plinks" data-astro-cid-yq2gsstb><a href="https://find-together-lobang-655120775569.asia-southeast1.run.app/" target="_blank" rel="noopener" data-astro-cid-yq2gsstb>Demo ↗</a><a href="https://github.com/r5th/find-together-lobang" target="_blank" rel="noopener" data-astro-cid-yq2gsstb>Code ↗</a></div></dd></div><div style="grid-column:1/-1" data-astro-cid-yq2gsstb><dt data-astro-cid-yq2gsstb>Stack</dt><dd data-astro-cid-yq2gsstb><ul class="stack" data-astro-cid-yq2gsstb><li data-astro-cid-yq2gsstb>Shopify</li><li data-astro-cid-yq2gsstb>Supabase</li><li data-astro-cid-yq2gsstb>Claude</li><li data-astro-cid-yq2gsstb>WhatsApp Business API</li><li data-astro-cid-yq2gsstb>Deno</li></ul></dd></div></dl></header><div class="body rv" data-astro-cid-yq2gsstb><h2 id="overview">Overview</h2>
+<p>Find Together Lobang is a WhatsApp-first grocery group-buying storefront for a real client (LuluSense), built as a software design course project. Buyers order in plain language over WhatsApp; the system parses the message, tells apart individual and group-buy orders, consolidates them, and lands them in Shopify Admin, which the client uses as the operational dashboard.</p>
+<div class="embed">
+  <p class="mono embed-eyebrow"><span class="chip live"><i></i></span>Live — running right now</p>
+  <div class="embed-frame">
+    <div class="embed-bar">
+      <span class="embed-url">find-together-lobang-655120775569.asia-southeast1.run.app</span>
+      <a href="https://find-together-lobang-655120775569.asia-southeast1.run.app/" target="_blank" rel="noopener">Open full ↗</a>
+    </div>
+    <iframe
+      src="https://find-together-lobang-655120775569.asia-southeast1.run.app/"
+      title="Find Together Lobang — live demo"
+      loading="lazy"
+      sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+    ></iframe>
+  </div>
+</div>
+<h2 id="how-it-works">How it works</h2>
+<ul>
+<li>Meta’s WhatsApp Cloud API receives the buyer’s message and hands it to the backend.</li>
+<li>Claude (Haiku for parsing, Opus where quality matters) turns the message into structured items and intent.</li>
+<li>Postgres on Supabase holds state Shopify can’t express: group-buy IDs, membership, thresholds, conversation sessions.</li>
+<li>Each order becomes a tagged Shopify draft order carrying a checkout link, with line items tied to real product variants so Shopify claims stock and can group orders by product. Admin filters Shopify orders by tag to see a consolidated batch.</li>
+<li>The design is hexagonal: conversation logic depends only on port interfaces, each with a live implementation and an in-memory fake, so the whole order flow runs and tests offline with no credentials (245 tests, no Docker).</li>
+<li>Compute runs on a single Cloud Run service (migrated off five separate Supabase Edge Functions); the database stays on Supabase Postgres, unchanged.</li>
+</ul>
+<h2 id="architecture">Architecture</h2>
+<p>The full codebase (109 files, 249 nodes, 557 edges) mapped and browsable as a knowledge graph — layers, imports, call graph, test coverage, all generated automatically from the source.</p>
+<div class="embed">
+  <p class="mono embed-eyebrow"><span class="chip"><i></i></span>Interactive — explore the graph</p>
+  <div class="embed-frame">
+    <div class="embed-bar">
+      <span class="embed-url">find-together-lobang architecture graph</span>
+      <a href="/projects/find-together-lobang/architecture/" target="_blank" rel="noopener">Open full ↗</a>
+    </div>
+    <iframe
+      src="/projects/find-together-lobang/architecture/"
+      title="Find Together Lobang — architecture graph"
+      loading="lazy"
+      sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+    ></iframe>
+  </div>
+</div>
+<h2 id="status">Status</h2>
+<p>Live. The full order flow (WhatsApp/Telegram → parse → Shopify draft order → payment → window close) runs against the deployed Cloud Run service, backed by Supabase Postgres. Code: <a href="https://github.com/r5th/find-together-lobang">github.com/r5th/find-together-lobang</a>.</p>
+<p>Two known bugs are still open: <code>&lt;product&gt; &lt;qty&gt;</code> phrasing fails where <code>&lt;qty&gt; &lt;product&gt;</code> works (offline stub only), and order confirmations show only the payment link, not the items or amount. Three usability KPIs (buyer task completion, admin round setup, trust) still need a live participant session to measure, not more commits. A window-reminder sweep (warns buyers before a window auto-closes) is in active development, not yet merged.</p>
+</div></div></article></main><script src="/app.js"></script></body></html>
